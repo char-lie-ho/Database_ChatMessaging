@@ -1,0 +1,20 @@
+<title>Chat Messaging</title>
+
+<%- include("templates/header") %>
+
+    <h2>
+        <%= loggedIn ? 'Hello, ' + username + '!' : 'Welcome!' %>
+    </h2>
+
+    <div>
+        <% if (loggedIn) { %>
+            <div style="margin-bottom: 10px;"><button onclick="location.href='/members'">Go to Members Area</button>
+            </div>
+            <div style="margin-bottom: 10px;"><button onclick="location.href='/logout'">Log out</button></div>
+            <% } else { %>
+                <div style="margin-bottom: 10px;"><button onclick="location.href='/signup'">Sign Up!</button></div>
+                <div style="margin-bottom: 10px;"><button onclick="location.href='/login'">Log in</button></div>
+                <% } %>
+    </div>
+
+    <%- include("templates/footer") %>
