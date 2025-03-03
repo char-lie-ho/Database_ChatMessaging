@@ -147,7 +147,7 @@ app.post('/loggingin', async (req, res) => {
                 req.session.user_type = results[0].type;
                 req.session.username = username;
                 req.session.cookie.maxAge = expireTime;
-                console.log('Session data after login:', req.session);
+                // console.log('Session data after login:', req.session);
                 res.redirect('/members');
                 return;
             }
@@ -200,15 +200,26 @@ app.get('/newGroup', async (req, res) => {
 
 app.post('/createGroup', async (req, res) => {
     const groupName = req.body.groupName;
+    const selectedUsers = req.body.members;  
     const username = req.session.username;
 
     try {
-        const result = await db_chats.createGroup({ groupName, username });
-        if (result) {
-            res.redirect('/members');
-        } else {
-            res.status(500).send('An error occurred while creating the group.');
+        const room_id = await db_chats.createGroup({groupName, username});
+        if (selectedUsers){
+            // for (let i = 0; i < selectedUsers.length; i++) {
+            //     const selectedUser = selectedUsers[i];
+            //     console.log("Selected User:", selectedUser);
+            //     // await db_chats.addUserToGroup({ groupName, selectedUser });
+            // }
+
+            await db_chats.addUserToGroup({ room_id, selectedUsers });
         }
+        res.redirect('/members');
+        // if (results) {  // check if the group was created
+        //     res.redirect('/members');
+        // } else {
+        //     res.status(500).send('An error occurred while creating the group.');
+        // }
     } catch (error) {
         console.error(error);
         res.status(500).send('An error occurred while processing your request.');

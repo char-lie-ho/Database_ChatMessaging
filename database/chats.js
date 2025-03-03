@@ -23,6 +23,8 @@ async function getGroups(postData) {
     }
 }
 // TO_DO: dynamically add users to group based on checkboxes
+// Check if the group name already exists, return false if it does
+// perhaps consider using transaction for this
 async function createGroup(postData) {
     const groupName = postData.groupName;
     const username = postData.username;
@@ -49,21 +51,35 @@ async function createGroup(postData) {
 
         await database.query(`
             INSERT INTO room_user (user_id, room_id)
-            VALUES (?, ?)
+            VALUES (?, ?);
         `, [userId, roomId]);
 
         console.log(`User ${username} has been added to the group ${groupName}`);
-        return true;
+        return roomId;
 
     } catch (error) {
         console.error('Error creating group and adding user:', error);
     }
 }
+async function addUserToGroup(postData) {
+    const selectedUsers = postData.selectedUsers;
+    const roomID = postData.room_id;
+    const placeholders = selectedUsers.map(() => "(?, ?)").join(", ");
+    const values = selectedUsers.flatMap(userId => [userId, roomID]);
+    const sql = `INSERT INTO room_user (user_id, room_id) VALUES ${placeholders}`;
 
+    try {
+        const result = await database.query(sql, values);
+        console.log("Users successfully added to the group");
+    } catch (error) {
+        console.error("Error adding users to group:", error);
+    }
+
+}
 // Get all users except the current user
-async function preCreateGroup(postData){
+async function preCreateGroup(postData) {
     let getGroupsSQL = `
-        SELECT username
+        SELECT username, user_id
         FROM user u
         WHERE username != (:username);
     `;
@@ -73,11 +89,11 @@ async function preCreateGroup(postData){
 
     try {
         const [results] = await database.query(getGroupsSQL, params);
-        return results; 
+        return results;
     }
     catch (err) {
         console.log(err);
         return null;
     }
 }
-module.exports = { getGroups, createGroup, preCreateGroup };
+module.exports = { getGroups, createGroup, preCreateGroup, addUserToGroup };
