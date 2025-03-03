@@ -1,0 +1,19 @@
+<%- include("templates/header", {scripts: ["https://code.jquery.com/jquery-3.6.3.js","/script.js"]}) %>
+
+    <h2>Create a New Group</h2>
+    <form action='/createGroup' method='post'>
+        <div style="margin-bottom: 10px;">
+            Group Name: <input name='groupName' type='text' placeholder='name' required>
+            <button>Create</button>
+        </div>
+
+    </form>
+    <br>
+    <div><button onclick="window.history.back()">Go Back</button></div>
+    <% var message=message || '' ; %>
+
+        <% if (message && message.length> 0) { %>
+            <p class="message">
+                <%= message %>
+            </p>
+            <% } %>

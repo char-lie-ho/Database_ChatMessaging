@@ -11,6 +11,7 @@ const saltRounds = 12;
 const database = include('databaseConnection');
 const db_utils = include('database/db_utils');
 const db_users = include('database/users');
+const db_chats = include('database/chats');
 const success = db_utils.printMySQLVersion();
 
 const port = process.env.PORT || 3000;
@@ -77,18 +78,34 @@ app.get('/createTables', async (req, res) => {
 });
 
 app.get('/signup', (req, res) => {
-    res.render("signup", { message: null });
+    res.render("signup");
 });
 
-app.get('/members', (req, res) => {
-    res.render("members", { 
-        username: req.session.username 
-    });
-});
+app.get('/members', async (req, res) => {
+    if (!req.session.username) { // Check if username is in session
+        return res.redirect('/login'); // Redirect to login if no session
+    }
 
+    const postData = {
+        username: req.session.username
+    };
+    const groupsList = await db_chats.getGroups(postData); // Pass postData with username
+
+    if (groupsList) {
+        res.render("members", {
+            username: req.session.username,
+            groups: groupsList
+        });
+    } else {
+        res.render("members", {
+            username: req.session.username,
+            groups: []
+        });
+    }
+});
 
 app.get('/login', (req, res) => {
-    res.render('login', { message: null }); // default no message
+    res.render('login'); // default no message
 });
 
 
@@ -161,10 +178,30 @@ function sessionValidation(req, res, next) {
     }
 }
 
+app.get('/newGroup', (req, res) => {
+    res.render('newGroup', {  username: req.session.username });
+});
+
+app.post('/createGroup', async (req, res) => {
+    const groupName = req.body.groupName;
+    const username = req.session.username;
+
+    try {
+        const result = await db_chats.createGroup({ groupName, username });
+        if (result) {
+            res.redirect('/members');
+        } else {
+            res.status(500).send('An error occurred while creating the group.');
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('An error occurred while processing your request.');
+    }
+});
+
+
 // // middleware to check if user is logged in
 // app.use('/loggedin', sessionValidation);
-
-
 
 
 app.get('/logout', (req, res) => {
@@ -186,14 +223,14 @@ app.use(express.static(__dirname + "/public"));
 
 app.use((req, res) => {
     res.status(404);
-    res.render("404"); 
+    res.render("404");
 });
 
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500);
-    res.send("Something went wrong. Please try again later."); 
+    res.send("Something went wrong. Please try again later.");
 });
 
 app.listen(port, () => {

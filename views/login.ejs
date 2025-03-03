@@ -1,4 +1,4 @@
-    <h2>Log in</h2>
+<h2>Log in</h2>
 <form action='/loggingin' method='post'>
     <div style="margin-bottom: 10px;">
         Username: <input name='username' type='text' placeholder='username' required>
@@ -8,11 +8,12 @@
     </div>
     <button>Log in</button>
 </form>
-    <br>
-    <div><button onclick="window.history.back()">Go Back</button></div>
-    <% if (message) { %>
-        <p class="message">
-            <%= message %>
-        </p>
-        <% } %>
-            <%- include("templates/footer") %>
+<br>
+<div><button onclick="window.history.back()">Go Back</button></div>
+<% var message=message || '' ; %>
+<% if (message) { %>
+    <p class="message">
+        <%= message %>
+    </p>
+    <% } %>
+        <%- include("templates/footer") %>

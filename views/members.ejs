@@ -4,9 +4,32 @@
 
     <body>
         <h3>Hello <%= username %> !</h3>
-        <h4>Your chats: </h4>
+        <h4>You are in groups.</h4>
         <div id="chats">
-            <p>Loading...</p>
+            <table id="chatsTable">
+                <thead>
+                    <tr>
+                        <th>Room ID</th>
+                        <th>Room Name</th>
+                        <th>Unread message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% groups.forEach(group=> { %>
+                        <tr>
+                            <td>
+                                <%= group.room_id %>
+                            </td>
+                            <td>
+                                <%= group.name %>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <% }); %>
+                </tbody>
+            </table>
+            <br>
+            <button onclick="location.href='/newGroup'">New Group</button>
     </body>
 
     <%- include("templates/footer") %>
