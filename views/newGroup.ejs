@@ -4,11 +4,23 @@
     <form action='/createGroup' method='post'>
         <div style="margin-bottom: 10px;">
             Group Name: <input name='groupName' type='text' placeholder='name' required>
+
+            <div class="scroll-box">
+                <h> Members to be included: </h>
+                <% users.forEach(user=> { %>
+                    <div class="item">
+                        <input type="checkbox" id="user_<%= user.username %>">
+                        <label for="user_<%= user.username %>">
+                            <%= user.username %>
+                        </label>
+                    </div>
+                    <% }); %>
+            </div>
+
             <button>Create</button>
         </div>
 
     </form>
-    <br>
     <div><button onclick="window.history.back()">Go Back</button></div>
     <% var message=message || '' ; %>
 

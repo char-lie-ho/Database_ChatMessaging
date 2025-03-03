@@ -178,8 +178,24 @@ function sessionValidation(req, res, next) {
     }
 }
 
-app.get('/newGroup', (req, res) => {
-    res.render('newGroup', {  username: req.session.username });
+app.get('/newGroup', async (req, res) => {
+    if (!req.session.username) { // Check if username is in session
+        return res.redirect('/login'); // Redirect to login if no session
+    }
+    // TO-DO: create a function to get all users except the current user
+    const postData = {
+        username: req.session.username
+    };
+    const usersList = await db_chats.preCreateGroup(postData); // Pass postData with username
+
+    if (usersList) {
+        res.render("newGroup", {
+            username: req.session.username,
+            users: usersList
+        });
+    } else {
+        res.redirect('/login');
+    }
 });
 
 app.post('/createGroup', async (req, res) => {

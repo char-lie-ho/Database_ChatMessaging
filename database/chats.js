@@ -22,7 +22,7 @@ async function getGroups(postData) {
         return null;
     }
 }
-
+// TO_DO: dynamically add users to group based on checkboxes
 async function createGroup(postData) {
     const groupName = postData.groupName;
     const username = postData.username;
@@ -60,5 +60,24 @@ async function createGroup(postData) {
     }
 }
 
+// Get all users except the current user
+async function preCreateGroup(postData){
+    let getGroupsSQL = `
+        SELECT username
+        FROM user u
+        WHERE username != (:username);
+    `;
+    let params = {
+        username: postData.username
+    }
 
-module.exports = { getGroups, createGroup };
+    try {
+        const [results] = await database.query(getGroupsSQL, params);
+        return results; 
+    }
+    catch (err) {
+        console.log(err);
+        return null;
+    }
+}
+module.exports = { getGroups, createGroup, preCreateGroup };
