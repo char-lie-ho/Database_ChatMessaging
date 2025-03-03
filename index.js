@@ -145,9 +145,9 @@ app.post('/loggingin', async (req, res) => {
             if (bcrypt.compareSync(password, results[0].password)) {
                 req.session.authenticated = true;
                 req.session.user_type = results[0].type;
+                req.session.user_id = results[0].user_id;
                 req.session.username = username;
                 req.session.cookie.maxAge = expireTime;
-                // console.log('Session data after login:', req.session);
                 res.redirect('/members');
                 return;
             }
@@ -179,12 +179,12 @@ function sessionValidation(req, res, next) {
 }
 
 app.get('/newGroup', async (req, res) => {
-    if (!req.session.username) { // Check if username is in session
+    if (!req.session.user_id) { // Check if username is in session
         return res.redirect('/login'); // Redirect to login if no session
     }
-    // TO-DO: create a function to get all users except the current user
+
     const postData = {
-        username: req.session.username
+        user_id: req.session.user_id
     };
     const usersList = await db_chats.preCreateGroup(postData); // Pass postData with username
 
@@ -200,26 +200,26 @@ app.get('/newGroup', async (req, res) => {
 
 app.post('/createGroup', async (req, res) => {
     const groupName = req.body.groupName;
-    const selectedUsers = req.body.members;  
-    const username = req.session.username;
+    const selectedUsers = req.body.members;
+    const user_id = req.session.user_id;
 
     try {
-        const room_id = await db_chats.createGroup({groupName, username});
-        if (selectedUsers){
-            // for (let i = 0; i < selectedUsers.length; i++) {
-            //     const selectedUser = selectedUsers[i];
-            //     console.log("Selected User:", selectedUser);
-            //     // await db_chats.addUserToGroup({ groupName, selectedUser });
-            // }
-
+        // create room, add current user to room
+        const room_id = await db_chats.createGroup({ groupName, user_id });
+        // want to check if the room was created successfully before adding users
+        if (!room_id) {
+            const usersList = await db_chats.preCreateGroup({ user_id }); // Fetch users again
+            return res.render("newGroup", {
+                username: req.session.username,
+                users: usersList,
+                message: 'Group name already exists. Please try again.'
+            });
+        }
+        // add selected users to room if any
+        if (selectedUsers && selectedUsers.length > 0) {
             await db_chats.addUserToGroup({ room_id, selectedUsers });
         }
         res.redirect('/members');
-        // if (results) {  // check if the group was created
-        //     res.redirect('/members');
-        // } else {
-        //     res.status(500).send('An error occurred while creating the group.');
-        // }
     } catch (error) {
         console.error(error);
         res.status(500).send('An error occurred while processing your request.');

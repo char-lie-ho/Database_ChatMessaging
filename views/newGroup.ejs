@@ -21,14 +21,11 @@
 
             <button id="getCheckedUsers">Create</button>
         </div>
-
     </form>
-    <div><button onclick="window.history.back()">Go Back</button></div>
     <% var message=message || '' ; %>
-
-        <% if (message && message.length> 0) { %>
-            <p class="message">
+        <% if (message) { %>
+            <p class="message" style="color: darkred;">
                 <%= message %>
             </p>
             <% } %>
-
+                <div><button onclick="window.history.back()">Go Back</button></div>

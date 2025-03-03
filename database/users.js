@@ -35,9 +35,7 @@ async function getUsers(postData) {
 	
 	try {
 		const results = await database.query(getUsersSQL);
-
         console.log("Successfully retrieved users");
-		// console.log(results[0]);
 		return results[0];
 	}
 	catch(err) {

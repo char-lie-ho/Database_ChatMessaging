@@ -22,52 +22,49 @@ async function getGroups(postData) {
         return null;
     }
 }
-// TO_DO: dynamically add users to group based on checkboxes
-// Check if the group name already exists, return false if it does
-// perhaps consider using transaction for this
+
 async function createGroup(postData) {
     const groupName = postData.groupName;
-    const username = postData.username;
+    const user_id = postData.user_id;
 
+    const connection = await database.getConnection();
     try {
-        await database.query(`
+        await connection.beginTransaction();
+
+        await connection.query(`
             INSERT INTO room (name, start_datetime)
             VALUES (?, NOW())
         `, [groupName]);
 
-        const [roomResult] = await database.query(`
+        const [roomResult] = await connection.query(`
             SELECT room_id 
             FROM room
             WHERE name = ?
         `, [groupName]);
         const roomId = roomResult[0].room_id;
 
-        const [userResult] = await database.query(`
-            SELECT user_id 
-            FROM user
-            WHERE username = ?
-        `, [username]);
-        const userId = userResult[0].user_id;
-
-        await database.query(`
+        await connection.query(`
             INSERT INTO room_user (user_id, room_id)
             VALUES (?, ?);
-        `, [userId, roomId]);
+        `, [user_id, roomId]);
 
-        console.log(`User ${username} has been added to the group ${groupName}`);
+        await connection.commit();
         return roomId;
 
     } catch (error) {
+        await connection.rollback();
         console.error('Error creating group and adding user:', error);
+    } finally {
+        connection.release();
     }
 }
+
 async function addUserToGroup(postData) {
     const selectedUsers = postData.selectedUsers;
     const roomID = postData.room_id;
     const placeholders = selectedUsers.map(() => "(?, ?)").join(", ");
     const values = selectedUsers.flatMap(userId => [userId, roomID]);
     const sql = `INSERT INTO room_user (user_id, room_id) VALUES ${placeholders}`;
-
     try {
         const result = await database.query(sql, values);
         console.log("Users successfully added to the group");
@@ -76,15 +73,16 @@ async function addUserToGroup(postData) {
     }
 
 }
+
 // Get all users except the current user
 async function preCreateGroup(postData) {
     let getGroupsSQL = `
         SELECT username, user_id
         FROM user u
-        WHERE username != (:username);
+        WHERE user_id != (:user_id);
     `;
     let params = {
-        username: postData.username
+        user_id: postData.user_id
     }
 
     try {
