@@ -51,15 +51,13 @@ app.use(session({
 
 
 app.get('/', (req, res) => {
-    if (req.session.authenticated) {
-        console.log("login");
+    if (isValidSession(req)) {
         res.render('index', {
             loggedIn: true,
             username: req.session.username
         })
 
     } else {
-        console.log("not login");
         res.render('index', {
             loggedIn: false
         });
@@ -83,7 +81,9 @@ app.get('/signup', (req, res) => {
 });
 
 app.get('/members', (req, res) => {
-    res.render("members", { username: req.session.username, user_type: req.session.user_type });
+    res.render("members", { 
+        username: req.session.username 
+    });
 });
 
 
@@ -161,22 +161,11 @@ function sessionValidation(req, res, next) {
     }
 }
 
-// middleware to check if user is logged in
-app.use('/loggedin', sessionValidation);
+// // middleware to check if user is logged in
+// app.use('/loggedin', sessionValidation);
 
 
-app.get('/loggedin', (req, res) => {
-    res.render("loggedin");
-});
 
-app.get('/loggedin/info', (req, res) => {
-    res.render("loggedin-info");
-});
-
-
-app.get('/loggedin/member', (req, res) => {
-    res.render("memberInfo", { username: req.session.username, user_type: req.session.user_type });
-});
 
 app.get('/logout', (req, res) => {
     req.session.destroy((err) => {

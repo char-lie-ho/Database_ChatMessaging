@@ -1,9 +1,12 @@
-<%- include("templates/header", {scripts: ["https://code.jquery.com/jquery-3.6.3.js","/script.js"]}) %>
-    <h1>Hello <%= username %>
-            <% if (user_type=='admin' ) { %>
-                <%= " (admin)" %>
-                    <% } %>!</h1>
-    <br>
+<title>Group chats</title>
 
-    <button onclick="location.href='/logout'">Log out</button>
+<%- include("templates/header", {scripts: ["https://code.jquery.com/jquery-3.6.3.js","/script.js"]}) %>
+
+    <body>
+        <h3>Hello <%= username %> !</h3>
+        <h4>Your chats: </h4>
+        <div id="chats">
+            <p>Loading...</p>
+    </body>
+
     <%- include("templates/footer") %>
