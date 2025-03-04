@@ -178,14 +178,14 @@ function sessionValidation(req, res, next) {
 }
 
 app.get('/newGroup', async (req, res) => {
-    if (!req.session.user_id) { // Check if username is in session
+    if (!req.session.user_id) {
         return res.redirect('/login'); // Redirect to login if no session
     }
 
     const postData = {
         user_id: req.session.user_id
     };
-    const usersList = await db_chats.preCreateGroup(postData); // Pass postData with username
+    const usersList = await db_users.preCreateGroup(postData);
 
     if (usersList) {
         res.render("newGroup", {
@@ -207,7 +207,7 @@ app.post('/createGroup', async (req, res) => {
         const room_id = await db_chats.createGroup({ groupName, user_id });
         // want to check if the room was created successfully before adding users
         if (!room_id) {
-            const usersList = await db_chats.preCreateGroup({ user_id }); // Fetch users again
+            const usersList = await db_users.preCreateGroup({ user_id });
             return res.render("newGroup", {
                 username: req.session.username,
                 users: usersList,
@@ -229,7 +229,7 @@ app.get('/chat/:room_id', async (req, res) => {
     const roomId = req.params.room_id;
     const user_id = req.session.user_id;
     try {
-        const validGroup = await db_chats.checkUserInGroup({ roomId, user_id });
+        const validGroup = await db_users.checkUserInGroup({ roomId, user_id });
         if (!validGroup) {
             return res.redirect('/members');
         }
@@ -252,9 +252,8 @@ app.post('/sendMessage', async (req, res) => {
     const user_id = req.session.user_id;
     const { message, roomId } = req.body;
     try {
-        const validGroup = await db_chats.checkUserInGroup({ roomId, user_id });
+        const validGroup = await db_users.checkUserInGroup({ roomId, user_id });
         if (!validGroup) {
-            console.log('User not in group');
             return res.redirect('/members');
         }
 
@@ -263,6 +262,32 @@ app.post('/sendMessage', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).send('An error occurred while sending the message.');
+    }
+});
+
+app.get('/invite', async (req, res) => {
+    const roomId = req.query.room_id;
+    const user_id = req.session.user_id;
+    try {
+        const validGroup = await db_users.checkUserInGroup({ roomId, user_id });
+        if (!validGroup) {
+            return res.redirect('/members');
+        }
+        const usersList = await db_users.createInviteList({ roomId, user_id });
+        console.log(usersList);
+        if (usersList) {
+            res.render("invite", {
+                username: req.session.username,
+                users: usersList
+            });
+        } else {
+            res.redirect('/members');
+        }
+
+        // res.redirect(`/chat/${roomId}`);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('An error occurred while inviting people');
     }
 });
 

@@ -1,12 +1,10 @@
-<title>Cerate New Group</title>
+<title>Invite</title>
 
 <%- include("templates/header", {scripts: ["https://code.jquery.com/jquery-3.6.3.js","/script.js"]}) %>
 
-    <h2>Create a New Group</h2>
+    <h2>Invite People</h2>
     <form action='/createGroup' method='post'>
         <div style="margin-bottom: 10px;">
-            Group Name: <input name='groupName' type='text' placeholder='Name' required>
-
             <div class="scroll-box">
                 <h> Members to be included: </h>
                 <% users.forEach(user=> { %>
@@ -19,7 +17,7 @@
                     <% }); %>
             </div>
 
-            <button id="getCheckedUsers">Create</button>
+            <button id="getCheckedUsers">Confirm</button>
         </div>
     </form>
     <% var message=message || '' ; %>

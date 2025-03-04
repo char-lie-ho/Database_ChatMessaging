@@ -108,27 +108,7 @@ async function getGroupMessages(postData) {
     }
 }
 
-async function checkUserInGroup(postData) {
-    let checkUserInGroupSQL = `
-        SELECT user_id
-        FROM room_user
-        WHERE room_id = (:room_id) AND user_id = (:user_id);
-    `;
 
-    let params = {
-        room_id: postData.roomId,
-        user_id: postData.user_id
-    }
-
-    try {
-        const [results] = await database.query(checkUserInGroupSQL, params);
-        return results.length > 0;
-    }
-    catch (err) {
-        console.log(err);
-        return false;
-    }
-}
 
 async function addMessage(postData) {
     let addMessageSQL = `
@@ -154,24 +134,5 @@ async function addMessage(postData) {
         console.error('Error adding message:', error);
     }
 }
-// Get all users except the current user
-async function preCreateGroup(postData) {
-    let getGroupsSQL = `
-        SELECT username, user_id
-        FROM user u
-        WHERE user_id != (:user_id);
-    `;
-    let params = {
-        user_id: postData.user_id
-    }
 
-    try {
-        const [results] = await database.query(getGroupsSQL, params);
-        return results;
-    }
-    catch (err) {
-        console.log(err);
-        return null;
-    }
-}
-module.exports = { getGroups, createGroup, preCreateGroup, addUserToGroup, getGroupMessages, checkUserInGroup, addMessage };
+module.exports = { getGroups, createGroup, addUserToGroup, getGroupMessages, addMessage };

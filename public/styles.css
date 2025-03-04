@@ -39,6 +39,8 @@
 }
 
 .message-item {
+    overflow:auto;
+    width: 50%;
     margin-bottom: 15px;
     padding: 10px;
     border-radius: 8px;
@@ -46,6 +48,7 @@
 }
 
 .user-message {
+    float: right;
     background-color: #dcf8c6;
     text-align: right;
 }

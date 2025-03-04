@@ -42,7 +42,9 @@
                 <input type="text" id="messageInput" name="message" placeholder="Type a message..." required>
                 <button type="submit">Send</button>
             </form>
-        </div><button onclick="window.history.back()" style="float: right;">Go Back</button>
+        </div>
+        <button onclick="window.location.href = '/invite?room_id=<%= room_id %>'">Invite People</button>
+        <button onclick="window.location.href ='/members'" style="float: right;">Go Back</button>
     </div>
 
 
