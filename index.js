@@ -226,6 +226,26 @@ app.post('/createGroup', async (req, res) => {
     }
 });
 
+app.get('/chat/:room_id', async (req, res) => {
+    const roomId = req.params.room_id;
+    const user_id = req.session.user_id;
+    try {
+        const validGroup = await db_chats.checkUserInGroup({ roomId, user_id });
+        if (!validGroup) {
+            return res.redirect('/members');
+        }
+        const messages = await db_chats.getGroupMessages({ roomId });
+
+        res.render('chatroom', {
+            username: req.session.username,
+            messages: messages
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('An error occurred while processing your request.');
+    }
+});
 
 // // middleware to check if user is logged in
 // app.use('/loggedin', sessionValidation);

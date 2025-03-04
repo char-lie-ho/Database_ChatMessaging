@@ -22,7 +22,7 @@
                 </thead>
                 <tbody>
                     <% groups.forEach(group=> { %>
-                        <tr>
+                        <tr onclick="window.location.href='/chat/<%= group.room_id %>'"> 
                             <td>
                                 <%= group.room_id %>
                             </td>

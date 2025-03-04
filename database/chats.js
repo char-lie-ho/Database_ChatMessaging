@@ -1,14 +1,6 @@
 const database = include('databaseConnection');
 
 async function getGroups(postData) {
-    // let getGroupsSQL = `
-    //     SELECT r.room_id, r.name
-    //     FROM user u
-    //     JOIN room_user ru ON ru.user_id = u.user_id
-    //     JOIN room r ON ru.room_id = r.room_id
-    //     WHERE username = (:username);
-    // `;
-
     let getGroupsSQL = `
         WITH msgList AS (
             SELECT ru.room_id, MAX(m.sent_datetime) AS latestMsg
@@ -91,6 +83,52 @@ async function addUserToGroup(postData) {
 
 }
 
+async function getGroupMessages(postData) {
+    let getGroupMessagesSQL = `
+        SELECT m.text as text, m.sent_datetime as sent_time, me.*
+        FROM room_user ru
+        JOIN message m ON m.room_user_id = ru.room_user_id
+        LEFT JOIN message_emoji me ON m.message_id = me.message_id
+        WHERE ru.room_id = (:room_id)
+        ORDER BY m.sent_datetime ASC;
+    `;
+
+    let params = {
+        room_id: postData.roomId
+    }
+
+    try {
+        const [results] = await database.query(getGroupMessagesSQL, params);
+        console.log(results)
+        return results;
+    }
+    catch (err) {
+        console.log(err);
+        return null;
+    }
+}
+
+async function checkUserInGroup(postData) {
+    let checkUserInGroupSQL = `
+        SELECT user_id
+        FROM room_user
+        WHERE room_id = (:room_id) AND user_id = (:user_id);
+    `;
+
+    let params = {
+        room_id: postData.roomId,
+        user_id: postData.user_id
+    }
+
+    try {
+        const [results] = await database.query(checkUserInGroupSQL, params);
+        return results.length > 0;
+    }
+    catch (err) {
+        console.log(err);
+        return false;
+    }
+}
 // Get all users except the current user
 async function preCreateGroup(postData) {
     let getGroupsSQL = `
@@ -111,4 +149,4 @@ async function preCreateGroup(postData) {
         return null;
     }
 }
-module.exports = { getGroups, createGroup, preCreateGroup, addUserToGroup };
+module.exports = { getGroups, createGroup, preCreateGroup, addUserToGroup, getGroupMessages, checkUserInGroup };
