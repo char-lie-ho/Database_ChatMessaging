@@ -39,8 +39,11 @@
 }
 
 .message-item {
-    overflow:auto;
+    overflow: auto;
+    clear: both;
     width: 50%;
+    max-width: 500px;
+    min-width: 200px;
     margin-bottom: 15px;
     padding: 10px;
     border-radius: 8px;
