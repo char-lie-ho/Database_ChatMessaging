@@ -1,21 +1,38 @@
 const database = include('databaseConnection');
 
 async function getGroups(postData) {
+    // let getGroupsSQL = `
+    //     SELECT r.room_id, r.name
+    //     FROM user u
+    //     JOIN room_user ru ON ru.user_id = u.user_id
+    //     JOIN room r ON ru.room_id = r.room_id
+    //     WHERE username = (:username);
+    // `;
+
     let getGroupsSQL = `
-        SELECT r.room_id, r.name
-        FROM user u
-        JOIN room_user ru ON ru.user_id = u.user_id
+        WITH msgList AS (
+            SELECT ru.room_id, MAX(m.sent_datetime) AS latestMsg
+            FROM message m
+            JOIN room_user ru ON m.room_user_id = ru.room_user_id
+            GROUP BY ru.room_id
+        )
+        SELECT
+            r.room_id,
+            r.name AS room_name,
+            msgList.latestMsg
+        FROM room_user ru
         JOIN room r ON ru.room_id = r.room_id
-        WHERE username = (:username);
-    `;
+        LEFT JOIN msgList ON msgList.room_id = r.room_id
+        WHERE ru.user_id = (:user_id)
+        `;
+
     let params = {
-        username: postData.username
+        user_id: postData.user_id
     }
 
-    try {
+       try {
         const [results] = await database.query(getGroupsSQL, params);
-
-        return results; // Return the results, not just true
+        return results;
     }
     catch (err) {
         console.log(err);

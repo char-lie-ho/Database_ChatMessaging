@@ -82,14 +82,14 @@ app.get('/signup', (req, res) => {
 });
 
 app.get('/members', async (req, res) => {
-    if (!req.session.username) { // Check if username is in session
+    if (!req.session.user_id) { // Check if user is in session
         return res.redirect('/login'); // Redirect to login if no session
     }
 
     const postData = {
-        username: req.session.username
+        user_id: req.session.user_id
     };
-    const groupsList = await db_chats.getGroups(postData); // Pass postData with username
+    const groupsList = await db_chats.getGroups(postData);
 
     if (groupsList) {
         res.render("members", {
