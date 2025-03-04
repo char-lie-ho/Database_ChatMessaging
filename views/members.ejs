@@ -1,10 +1,15 @@
 <title>Group Chats</title>
 
+
 <%- include("templates/header", {scripts: ["https://code.jquery.com/jquery-3.6.3.js","/script.js"]}) %>
+
+    <head>
+        <link rel="stylesheet" href="/styles.css">
+    </head>
 
     <body>
         <h3>Hello <%= username %> !</h3>
-        <h4>You are in groups.</h4>
+        <h4>You are in <%= groups.length %> groups.</h4>
         <div id="chats">
             <table id="chatsTable">
                 <thead>
@@ -24,6 +29,7 @@
                             <td>
                                 <%= group.name %>
                             </td>
+                            <td></td>
                             <td></td>
                         </tr>
                         <% }); %>

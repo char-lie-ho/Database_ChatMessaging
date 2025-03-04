@@ -1,0 +1,33 @@
+#chatsTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+#chatsTable th,
+#chatsTable td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+#chatsTable th {
+    background-color: #1191f9;
+    color: white;
+    font-weight: bold;
+}
+
+#chatsTable tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#chatsTable tr:hover {
+    background-color: #ddd;
+    cursor: pointer;
+}
+
+.room-name {
+    font-weight: bold;
+    color: #007BFF;
+}
