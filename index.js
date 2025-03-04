@@ -199,9 +199,12 @@ app.get('/newGroup', async (req, res) => {
 
 app.post('/createGroup', async (req, res) => {
     const groupName = req.body.groupName;
-    const selectedUsers = req.body.members;
+    let selectedUsers = req.body.members;
     const user_id = req.session.user_id;
-
+    // convert selectedUsers to array when only one user is selected
+    if (!Array.isArray(selectedUsers)) {
+        selectedUsers = selectedUsers ? [selectedUsers] : [];
+    }
     try {
         // create room, add current user to room
         const room_id = await db_chats.createGroup({ groupName, user_id });
@@ -296,10 +299,27 @@ app.get('/invite', async (req, res) => {
 // TODO: finish the logic to add users to group
 app.post('/invite', (req, res) => {
     const roomId = req.body.room_id;
-    const selectedUsers = req.body.members;
+    let selectedUsers = req.body.members;
+    // convert selectedUsers to array when only one user is selected
+    if (!Array.isArray(selectedUsers)) {
+        selectedUsers = selectedUsers ? [selectedUsers] : []; 
+    }
 
-    console.log('Inviting user:', selectedUsers, 'to room:', roomId);
-    res.redirect(`/room/${roomId}`);
+    try {
+        // add selected users to room if any
+        console.log('selectedUsers:', selectedUsers);
+        if (selectedUsers && selectedUsers.length > 0) {
+            db_chats.addUserToGroup({ room_id: roomId, selectedUsers });
+        }
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).send('An error occurred while sending the message.');
+    }
+    finally {
+        console.log('Inviting user:', selectedUsers, 'to room:', roomId);
+        res.redirect(`/chat/${roomId}`);
+    }
 });
 
 // // middleware to check if user is logged in
