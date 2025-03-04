@@ -22,7 +22,7 @@
                 </thead>
                 <tbody>
                     <% groups.forEach(group=> { %>
-                        <tr onclick="window.location.href='/chat/<%= group.room_id %>'"> 
+                        <tr onclick="window.location.href='/chat/<%= group.room_id %>'">
                             <td>
                                 <%= group.room_id %>
                             </td>
@@ -34,7 +34,7 @@
                                     Date(group.latestMsg).toLocaleString('en-US', { month: 'short' , day: 'numeric' ,
                                     year: 'numeric' , hour: '2-digit' , minute: '2-digit' , hour12: true }) : '' ; %>
 
-                                        <%= formattedDate %>
+                                    <%= formattedDate %>
                             </td>
                             <td></td>
                         </tr>

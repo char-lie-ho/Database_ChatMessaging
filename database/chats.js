@@ -100,7 +100,6 @@ async function getGroupMessages(postData) {
 
     try {
         const [results] = await database.query(getGroupMessagesSQL, params);
-        console.log(results)
         return results;
     }
     catch (err) {
@@ -130,6 +129,31 @@ async function checkUserInGroup(postData) {
         return false;
     }
 }
+
+async function addMessage(postData) {
+    let addMessageSQL = `
+        INSERT INTO message (text, sent_datetime, room_user_id)
+        VALUES (:message, NOW(), (
+            SELECT room_user_id
+            FROM room_user
+            WHERE user_id = :userId AND room_id = :roomId
+            LIMIT 1
+        ));
+    `;
+
+    let params = {
+        message: postData.message,
+        userId: postData.user_id,
+        roomId: postData.roomId
+    }
+
+    try {
+        await database.query(addMessageSQL, params);
+        return true;
+    } catch (error) {
+        console.error('Error adding message:', error);
+    }
+}
 // Get all users except the current user
 async function preCreateGroup(postData) {
     let getGroupsSQL = `
@@ -150,4 +174,4 @@ async function preCreateGroup(postData) {
         return null;
     }
 }
-module.exports = { getGroups, createGroup, preCreateGroup, addUserToGroup, getGroupMessages, checkUserInGroup };
+module.exports = { getGroups, createGroup, preCreateGroup, addUserToGroup, getGroupMessages, checkUserInGroup, addMessage };

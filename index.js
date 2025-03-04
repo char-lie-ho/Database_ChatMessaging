@@ -13,7 +13,6 @@ const db_utils = include('database/db_utils');
 const db_users = include('database/users');
 const db_chats = include('database/chats');
 const success = db_utils.printMySQLVersion();
-
 const port = process.env.PORT || 3000;
 
 const app = express();
@@ -239,12 +238,31 @@ app.get('/chat/:room_id', async (req, res) => {
         res.render('chatroom', {
             username: req.session.username,
             messages: messages,
-            user_id: user_id
+            user_id: user_id,
+            room_id: roomId
         });
 
     } catch (error) {
         console.error(error);
         res.status(500).send('An error occurred while processing your request.');
+    }
+});
+
+app.post('/sendMessage', async (req, res) => {
+    const user_id = req.session.user_id;
+    const { message, roomId } = req.body;
+    try {
+        const validGroup = await db_chats.checkUserInGroup({ roomId, user_id });
+        if (!validGroup) {
+            console.log('User not in group');
+            return res.redirect('/members');
+        }
+
+        await db_chats.addMessage({ message, user_id, roomId });
+        res.redirect(`/chat/${roomId}`);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('An error occurred while sending the message.');
     }
 });
 
