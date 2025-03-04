@@ -2,24 +2,31 @@
 
 <%- include("templates/header", {scripts: ["https://code.jquery.com/jquery-3.6.3.js","/script.js"]}) %>
 
-    <h2>Invite People</h2>
-    <form action='/createGroup' method='post'>
-        <div style="margin-bottom: 10px;">
-            <div class="scroll-box">
-                <h> Members to be included: </h>
+    <h2>Invite People to Group</h2>
+<form action='/invite' method='post'>
+    <input type="hidden" name="room_id" value="<%= room_id %>">
+    <div style="margin-bottom: 10px;">
+        <div class="scroll-box">
+            <h> Members to be included: </h>
+            <% if (users.length> 0) { %>
                 <% users.forEach(user=> { %>
                     <div class="item">
-                        <input type="checkbox" name="members" value="<%= user.user_id%>" id="<%= user.username %>">
+                        <input type="checkbox" name="members" value="<%= user.user_id %>" id="<%= user.username %>">
                         <label for="<%= user.user_id %>">
                             <%= user.username %>
                         </label>
                     </div>
                     <% }); %>
-            </div>
-
-            <button id="getCheckedUsers">Confirm</button>
+                        <% } else { %>
+                            <p>No users available to invite.</p>
+                            <% } %>
         </div>
-    </form>
+        <% if (users.length> 0) { %>
+            <button id="getCheckedUsers">Confirm</button>
+            <% } %>
+    </div>
+</form>
+
     <% var message=message || '' ; %>
         <% if (message) { %>
             <p class="message" style="color: darkred;">

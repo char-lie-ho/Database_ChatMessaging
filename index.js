@@ -269,16 +269,18 @@ app.get('/invite', async (req, res) => {
     const roomId = req.query.room_id;
     const user_id = req.session.user_id;
     try {
+        // check if user is in the group
         const validGroup = await db_users.checkUserInGroup({ roomId, user_id });
         if (!validGroup) {
             return res.redirect('/members');
         }
+        // check if any users are available to invite
         const usersList = await db_users.createInviteList({ roomId, user_id });
-        console.log(usersList);
         if (usersList) {
             res.render("invite", {
                 username: req.session.username,
-                users: usersList
+                users: usersList,
+                room_id: roomId
             });
         } else {
             res.redirect('/members');
@@ -289,6 +291,15 @@ app.get('/invite', async (req, res) => {
         console.error(error);
         res.status(500).send('An error occurred while inviting people');
     }
+});
+
+// TODO: finish the logic to add users to group
+app.post('/invite', (req, res) => {
+    const roomId = req.body.room_id;
+    const selectedUsers = req.body.members;
+
+    console.log('Inviting user:', selectedUsers, 'to room:', roomId);
+    res.redirect(`/room/${roomId}`);
 });
 
 // // middleware to check if user is logged in
