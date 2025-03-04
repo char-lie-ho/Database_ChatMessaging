@@ -40,7 +40,7 @@ async function createTables() {
   			room_user_id int NOT NULL AUTO_INCREMENT,
   			user_id int NOT NULL,
   			room_id int NOT NULL,
-			last_read_message_id INT DEFAULT 1,
+			read_count INT DEFAULT 0,
   			PRIMARY KEY (room_user_id),
   			UNIQUE KEY unique_room_user (user_id,room_id) ,
   			CONSTRAINT room_user_room FOREIGN KEY (room_id) REFERENCES room (room_id),

@@ -302,7 +302,7 @@ app.post('/invite', (req, res) => {
     let selectedUsers = req.body.members;
     // convert selectedUsers to array when only one user is selected
     if (!Array.isArray(selectedUsers)) {
-        selectedUsers = selectedUsers ? [selectedUsers] : []; 
+        selectedUsers = selectedUsers ? [selectedUsers] : [];
     }
 
     try {

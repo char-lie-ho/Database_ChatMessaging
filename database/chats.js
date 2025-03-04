@@ -2,20 +2,27 @@ const database = include('databaseConnection');
 
 async function getGroups(postData) {
     let getGroupsSQL = `
-        WITH msgList AS (
-            SELECT ru.room_id, MAX(m.sent_datetime) AS latestMsg
-            FROM message m
-            JOIN room_user ru ON m.room_user_id = ru.room_user_id
-            GROUP BY ru.room_id
-        )
-        SELECT
-            r.room_id,
-            r.name AS room_name,
-            msgList.latestMsg
-        FROM room_user ru
-        JOIN room r ON ru.room_id = r.room_id
-        LEFT JOIN msgList ON msgList.room_id = r.room_id
-        WHERE ru.user_id = (:user_id)
+        WITH max_message AS (
+            SELECT COUNT(m.room_user_id) AS message_count, ru.room_id
+        		FROM room_user ru
+        		LEFT JOIN message m ON ru.room_user_id = m.room_user_id
+        		GROUP BY ru.room_id
+        ), unread_user_group AS (
+        	SELECT ru.user_id, r.room_id, r.name, ru.read_count as current_count, mm.message_count
+        		FROM room_user ru
+        		JOIN room r ON r.room_id = ru.room_id
+        		LEFT JOIN max_message mm ON mm.room_id = ru.room_id
+        		WHERE ru.user_id = (:user_id)
+        ), msgList AS (
+        	SELECT ru.room_id, MAX(m.sent_datetime) AS latestMsg
+        		FROM message m
+        		JOIN room_user ru ON m.room_user_id = ru.room_user_id
+        		GROUP BY ru.room_id
+                )
+        	SELECT uug.name as room_name, mm.room_id, msgList.latestMsg, (mm.message_count - uug.current_count) as num_message_behind
+        	FROM unread_user_group uug
+        	JOIN max_message as mm ON mm.room_id = uug.room_id
+            LEFT JOIN msgList ON msgList.room_id = mm.room_id;
         `;
 
     let params = {
