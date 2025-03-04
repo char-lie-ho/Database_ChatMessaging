@@ -22,7 +22,7 @@ async function getGroups(postData) {
         user_id: postData.user_id
     }
 
-       try {
+    try {
         const [results] = await database.query(getGroupsSQL, params);
         return results;
     }
@@ -85,10 +85,11 @@ async function addUserToGroup(postData) {
 
 async function getGroupMessages(postData) {
     let getGroupMessagesSQL = `
-        SELECT m.text as text, m.sent_datetime as sent_time, me.*
+        SELECT m.text as text, m.sent_datetime as sent_time, me.*, ru.user_id as user_id, u.username
         FROM room_user ru
         JOIN message m ON m.room_user_id = ru.room_user_id
         LEFT JOIN message_emoji me ON m.message_id = me.message_id
+        JOIN user u ON ru.user_id = u.user_id
         WHERE ru.room_id = (:room_id)
         ORDER BY m.sent_datetime ASC;
     `;

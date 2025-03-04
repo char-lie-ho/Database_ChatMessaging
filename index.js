@@ -238,7 +238,8 @@ app.get('/chat/:room_id', async (req, res) => {
 
         res.render('chatroom', {
             username: req.session.username,
-            messages: messages
+            messages: messages,
+            user_id: user_id
         });
 
     } catch (error) {

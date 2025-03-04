@@ -1,9 +1,33 @@
 <title>Chatroom</title>
 
+<head>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
 <%- include("templates/header") %>
 
-<div>
 
-</div>
+    <div id="chatMessages" style="overflow-y: auto; max-height: 500px; padding-right: 10px;">
+        <% messages.forEach(message=> { %>
+            <div class="message-item <%= message.user_id === user_id ? 'user-message' : 'other-message' %>">
+                <div class="message-header">
+                    <span class="username">
+                        <%= message.username %>
+                    </span>
+                    <span class="timestamp">
+                        <%= new Date(message.sent_time).toLocaleString('en-US', { hour: '2-digit' , minute: '2-digit' ,
+                            hour12: true }) %>
+                    </span>
+                </div>
+                <div class="message-text" style="color: brown;">
+                    <%- message.text %> <!-- Allow raw HTML rendering (like links, bold, etc.) -->
+                </div>
+            </div>
+            <% }); %>
+    </div>
+    <div><button onclick="window.history.back()" style="float: right;">Go Back</button></div>
 
-<%- include("templates/footer") %>
+
+
+
+    <%- include("templates/footer") %>
