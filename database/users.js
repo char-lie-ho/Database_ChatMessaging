@@ -59,9 +59,8 @@ async function getUser(postData) {
 
 	try {
 		const results = await database.query(getUserSQL, params);
-
-		console.log("Trying to find user: ");
-		console.log(results[0]);
+		// console.log("Trying to find user: ");
+		// console.log(results[0]);
 		return results[0];
 	}
 	catch (err) {
@@ -92,27 +91,27 @@ async function preCreateGroup(postData) {
 	}
 }
 
-async function checkUserInGroup(postData) {
-	let checkUserInGroupSQL = `
-        SELECT user_id
-        FROM room_user
-        WHERE room_id = (:room_id) AND user_id = (:user_id);
-    `;
+// async function checkUserInGroup(postData) {
+// 	let checkUserInGroupSQL = `
+//         SELECT user_id
+//         FROM room_user
+//         WHERE room_id = (:room_id) AND user_id = (:user_id);
+//     `;
 
-	let params = {
-		room_id: postData.roomId,
-		user_id: postData.user_id
-	}
+// 	let params = {
+// 		room_id: postData.roomId,
+// 		user_id: postData.user_id
+// 	}
 
-	try {
-		const [results] = await database.query(checkUserInGroupSQL, params);
-		return results.length > 0;
-	}
-	catch (err) {
-		console.log(err);
-		return false;
-	}
-}
+// 	try {
+// 		const [results] = await database.query(checkUserInGroupSQL, params);
+// 		return results.length > 0;
+// 	}
+// 	catch (err) {
+// 		console.log(err);
+// 		return false;
+// 	}
+// }
 
 async function createInviteList(postData) {
 	let checkUserInGroupSQL = 
@@ -140,4 +139,4 @@ async function createInviteList(postData) {
 	}
 }
 
-module.exports = { createUser, getUsers, getUser, preCreateGroup, checkUserInGroup, createInviteList };
+module.exports = { createUser, getUsers, getUser, preCreateGroup, createInviteList };

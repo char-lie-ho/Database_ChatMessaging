@@ -80,28 +80,31 @@ app.get('/signup', (req, res) => {
     res.render("signup");
 });
 
+app.use(['/members'], async (req, res, next) => {
+    if (req.session.authenticated) {
+        req.session.chatrooms = await db_chats.getGroups({ user_id: req.session.user_id });
+    }
+    next();
+});
+
+app.use((req, res, next) => {
+    if (req.session.authenticated) {
+        res.locals.chatrooms = req.session.chatrooms || [];
+    }
+    next();
+});
+
 app.get('/members', async (req, res) => {
-    if (!req.session.user_id) { // Check if user is in session
+    if (!req.session.authenticated) {
         return res.redirect('/login'); // Redirect to login if no session
     }
 
-    const postData = {
-        user_id: req.session.user_id
-    };
-    const groupsList = await db_chats.getGroups(postData);
-
-    if (groupsList) {
-        res.render("members", {
-            username: req.session.username,
-            groups: groupsList
-        });
-    } else {
-        res.render("members", {
-            username: req.session.username,
-            groups: []
-        });
-    }
+    res.render("members", {
+        username: req.session.username,
+        groups: req.session.chatrooms || [] // Use cached chatroom data
+    });
 });
+
 
 app.get('/login', (req, res) => {
     res.render('login'); // default no message
@@ -232,11 +235,12 @@ app.get('/chat/:room_id', async (req, res) => {
     const roomId = req.params.room_id;
     const user_id = req.session.user_id;
     try {
-        const validGroup = await db_users.checkUserInGroup({ roomId, user_id });
-        if (!validGroup) {
+        const chatroomInfo = res.locals.chatrooms.find(room => room.room_id == roomId);
+        if (!chatroomInfo) {
             return res.redirect('/members');
         }
         const messages = await db_chats.getGroupMessages({ roomId });
+        // TO-DO: reset unread count for user in group
 
         res.render('chatroom', {
             username: req.session.username,
@@ -255,12 +259,12 @@ app.post('/sendMessage', async (req, res) => {
     const user_id = req.session.user_id;
     const { message, roomId } = req.body;
     try {
-        const validGroup = await db_users.checkUserInGroup({ roomId, user_id });
-        if (!validGroup) {
+        const chatroomInfo = res.locals.chatrooms.find(room => room.room_id == roomId);
+        if (!chatroomInfo) {
             return res.redirect('/members');
         }
-
         await db_chats.addMessage({ message, user_id, roomId });
+        // TO-DO: reset unread count
         res.redirect(`/chat/${roomId}`);
     } catch (error) {
         console.error(error);
@@ -272,9 +276,8 @@ app.get('/invite', async (req, res) => {
     const roomId = req.query.room_id;
     const user_id = req.session.user_id;
     try {
-        // check if user is in the group
-        const validGroup = await db_users.checkUserInGroup({ roomId, user_id });
-        if (!validGroup) {
+        const chatroomInfo = res.locals.chatrooms.find(room => room.room_id == roomId);
+        if (!chatroomInfo) {
             return res.redirect('/members');
         }
         // check if any users are available to invite
@@ -289,7 +292,6 @@ app.get('/invite', async (req, res) => {
             res.redirect('/members');
         }
 
-        // res.redirect(`/chat/${roomId}`);
     } catch (error) {
         console.error(error);
         res.status(500).send('An error occurred while inviting people');
