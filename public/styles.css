@@ -50,6 +50,18 @@
     background-color: #f1f1f1;
 }
 
+.new-message-divider {
+    overflow: auto;
+    clear: both;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
 .user-message {
     float: right;
     background-color: #dcf8c6;

@@ -240,12 +240,14 @@ app.get('/chat/:room_id', async (req, res) => {
         }
         const messages = await db_chats.getGroupMessages({ roomId });
         // TO-DO: reset unread count for user in group
-
+        let read_count = messages.length - chatroomInfo.num_message_behind;
         res.render('chatroom', {
             username: req.session.username,
             messages: messages,
             user_id: user_id,
-            room_id: roomId
+            room_id: roomId,
+            read_count: read_count,
+            num_message_behind: chatroomInfo.num_message_behind
         });
 
     } catch (error) {

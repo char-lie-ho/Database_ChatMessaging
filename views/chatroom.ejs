@@ -18,23 +18,31 @@
 
 
     <div id="chatMessages" style="overflow-y: auto; max-height: 500px; padding-right: 10px;">
-        <% messages.forEach(message=> { %>
-            <div class="message-item <%= message.user_id === user_id ? 'user-message' : 'other-message' %>">
-                <div class="message-header">
-                    <span class="username">
-                        <%= message.username %>
-                    </span>
-                    <span class="timestamp">
-                        <%= new Date(message.sent_time).toLocaleString('en-US', { hour: '2-digit' , minute: '2-digit' ,
-                            hour12: true }) %>
-                    </span>
+        <% for (let i=0; i < messages.length; i++) { %>
+            <% if (i==read_count) { %>
+                <div class="new-message-divider">
+                    <p>----------------You have <%= num_message_behind %> new messages ----------------</p>
                 </div>
-                <div class="message-text" style="color: brown;">
-                    <%= message.text %>
-                </div>
-            </div>
-            <% }); %>
+                <% } %>
+
+                    <div class="message-item <%= messages[i].user_id === user_id ? 'user-message' : 'other-message' %>">
+                        <div class="message-header">
+                            <span class="username">
+                                <%= messages[i].username %>
+                            </span>
+                            <span class="timestamp">
+                                <%= new Date(messages[i].sent_time).toLocaleString('en-US', { hour: '2-digit' ,
+                                    minute: '2-digit' , hour12: true }) %>
+                            </span>
+                        </div>
+                        <div class="message-text" style="color: brown;">
+                            <%= messages[i].text %>
+                        </div>
+                    </div>
+
+                    <% } %>
     </div>
+
     <div>
         <div id="chatInput">
             <form action="/sendMessage" method="POST">
