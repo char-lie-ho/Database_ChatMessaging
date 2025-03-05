@@ -83,6 +83,7 @@ app.get('/signup', (req, res) => {
 app.use(['/members'], async (req, res, next) => {
     if (req.session.authenticated) {
         req.session.chatrooms = await db_chats.getGroups({ user_id: req.session.user_id });
+        req.session.usersList = await db_users.preCreateGroup({ user_id: req.session.user_id });
     }
     next();
 });
@@ -90,6 +91,7 @@ app.use(['/members'], async (req, res, next) => {
 app.use((req, res, next) => {
     if (req.session.authenticated) {
         res.locals.chatrooms = req.session.chatrooms || [];
+        res.locals.usersList = req.session.usersList || [];
     }
     next();
 });
@@ -182,13 +184,9 @@ function sessionValidation(req, res, next) {
 
 app.get('/newGroup', async (req, res) => {
     if (!req.session.user_id) {
-        return res.redirect('/login'); // Redirect to login if no session
+        return res.redirect('/login');
     }
-
-    const postData = {
-        user_id: req.session.user_id
-    };
-    const usersList = await db_users.preCreateGroup(postData);
+    const usersList = res.locals.usersList;
 
     if (usersList) {
         res.render("newGroup", {
@@ -204,6 +202,7 @@ app.post('/createGroup', async (req, res) => {
     const groupName = req.body.groupName;
     let selectedUsers = req.body.members;
     const user_id = req.session.user_id;
+
     // convert selectedUsers to array when only one user is selected
     if (!Array.isArray(selectedUsers)) {
         selectedUsers = selectedUsers ? [selectedUsers] : [];
@@ -213,7 +212,7 @@ app.post('/createGroup', async (req, res) => {
         const room_id = await db_chats.createGroup({ groupName, user_id });
         // want to check if the room was created successfully before adding users
         if (!room_id) {
-            const usersList = await db_users.preCreateGroup({ user_id });
+            const usersList = res.locals.usersList || await db_users.preCreateGroup({ user_id });
             return res.render("newGroup", {
                 username: req.session.username,
                 users: usersList,
@@ -298,7 +297,6 @@ app.get('/invite', async (req, res) => {
     }
 });
 
-// TODO: finish the logic to add users to group
 app.post('/invite', (req, res) => {
     const roomId = req.body.room_id;
     let selectedUsers = req.body.members;
@@ -309,7 +307,7 @@ app.post('/invite', (req, res) => {
 
     try {
         // add selected users to room if any
-        console.log('selectedUsers:', selectedUsers);
+        // console.log('selectedUsers:', selectedUsers);
         if (selectedUsers && selectedUsers.length > 0) {
             db_chats.addUserToGroup({ room_id: roomId, selectedUsers });
         }
@@ -324,8 +322,8 @@ app.post('/invite', (req, res) => {
     }
 });
 
-// // middleware to check if user is logged in
-// app.use('/loggedin', sessionValidation);
+// middleware to check if user is logged in
+app.use('/loggedin', sessionValidation);
 
 
 app.get('/logout', (req, res) => {
