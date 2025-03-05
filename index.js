@@ -239,8 +239,9 @@ app.get('/chat/:room_id', async (req, res) => {
             return res.redirect('/members');
         }
         const messages = await db_chats.getGroupMessages({ roomId });
-        // TO-DO: reset unread count for user in group
         let read_count = messages.length - chatroomInfo.num_message_behind;
+        await db_chats.updateReadCount({ user_id, roomId });
+
         res.render('chatroom', {
             username: req.session.username,
             messages: messages,
@@ -252,7 +253,7 @@ app.get('/chat/:room_id', async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).send('An error occurred while processing your request.');
+        return res.redirect('/members');
     }
 });
 

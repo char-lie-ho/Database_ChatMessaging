@@ -115,8 +115,6 @@ async function getGroupMessages(postData) {
     }
 }
 
-
-
 async function addMessage(postData) {
     let addMessageSQL = `
         INSERT INTO message (text, sent_datetime, room_user_id)
@@ -142,4 +140,29 @@ async function addMessage(postData) {
     }
 }
 
-module.exports = { getGroups, createGroup, addUserToGroup, getGroupMessages, addMessage };
+async function updateReadCount(postData) {
+    let addMessageSQL = `
+    UPDATE room_user ru
+        JOIN (
+    	SELECT COUNT(m.text) as msg_count, ru.room_id
+    	    FROM message m
+    	    JOIN room_user ru ON m.room_user_id = ru.room_user_id
+    	    WHERE ru.room_id = :roomId ) AS message_counts
+            ON ru.room_id = message_counts.room_id
+            SET ru.read_count = message_counts.msg_count
+            WHERE ru.room_id = :roomId AND ru.user_id = :userId;
+        `;
+
+    let params = {
+        userId: postData.user_id,
+        roomId: postData.roomId
+    }
+
+    try {
+        await database.query(addMessageSQL, params);
+        return true;
+    } catch (error) {
+        console.error('Error adding message:', error);
+    }
+}
+module.exports = { getGroups, createGroup, addUserToGroup, getGroupMessages, addMessage, updateReadCount };
