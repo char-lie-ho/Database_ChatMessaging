@@ -247,6 +247,7 @@ app.get('/chat/:room_id', async (req, res) => {
             messages: messages,
             user_id: user_id,
             room_id: roomId,
+            room_name: chatroomInfo.room_name,
             read_count: read_count,
             num_message_behind: chatroomInfo.num_message_behind
         });

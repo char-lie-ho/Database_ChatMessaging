@@ -1,7 +1,17 @@
 <!-- Only for logged in pages  -->
-<header style="display: flex; justify-content: space-between; align-items: center; height: 30px; border-bottom: 2px solid #ccc;">
-    <p>
+<header
+    style="display: flex; justify-content: space-between; align-items: center; height: 30px; border-bottom: 2px solid #ccc;">
+    <p style="position: absolute; left: 5%; " onclick="location.href='/members'">
         <%= username %>'s chat
     </p>
-    <button onclick="location.href='/logout'">Log out</button>
+
+    <div style="position: absolute; left: 50%; color: #666; font-size:large;">
+        <% var room_name=room_name || '' ; %>
+            <% if (room_name) { %>
+                <%= room_name %>
+                    <% } %>
+    </div>
+    <div style="position: absolute; right: 5%;">
+        <button onclick="location.href='/members'">Members</button>
+    <button onclick="location.href='/logout'">Log out</button></div>
 </header>
