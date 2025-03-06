@@ -127,9 +127,7 @@ async function createInviteList(postData) {
 
 
 	let getUsersInGroupSQL = `
-		SELECT
-    	u.user_id,
-    	u.username,
+		SELECT u.user_id, u.username,
     	CASE
     	    WHEN ru.room_id IS NOT NULL THEN 1
     	    ELSE 0

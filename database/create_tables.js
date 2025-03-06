@@ -79,7 +79,7 @@ async function createTables() {
 		);`;
 	
 	try {
-		const results = await database.query(createUserTypeSQL);
+		await database.query(createUserTypeSQL);
 		await database.query(insertDefaultUserTypeSQL);
 		await database.query(createUserSQL);
 		await database.query(createRoomSQL);
