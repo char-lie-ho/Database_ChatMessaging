@@ -4,18 +4,18 @@
 <form action='/submitUser' method='post'>
     <div style="margin-bottom: 10px;">Username: <input name='username' type='text' placeholder='username' required
             maxlength="24"></div>
-    <div style="margin-bottom: 10px;">Password: <input name="password" type="password" placeholder="password" required>
+    <div style="margin-bottom: 10px;">Password: <input name="password" type="password" placeholder="password" required
+            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,}$"
+            title="Password must be at least 10 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character">
     </div>
-    <!-- pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,}$" 
-            title="Password must be at least 10 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character"> -->
     <button>Submit</button>
 </form>
 <br>
 <div><button onclick="window.history.back()">Go Back</button></div>
 <% var message=message || '' ; %>
-<% if (message) { %>
-    <p class="message">
-        <%= message %>
-    </p>
-    <% } %>
-        <%- include("templates/footer") %>
+    <% if (message) { %>
+        <p class="message">
+            <%= message %>
+        </p>
+        <% } %>
+            <%- include("templates/footer") %>

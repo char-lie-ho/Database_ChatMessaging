@@ -309,8 +309,6 @@ app.post('/invite', (req, res) => {
     }
 
     try {
-        // add selected users to room if any
-        // console.log('selectedUsers:', selectedUsers);
         if (selectedUsers && selectedUsers.length > 0) {
             db_chats.addUserToGroup({ room_id: roomId, selectedUsers });
         }
@@ -320,7 +318,6 @@ app.post('/invite', (req, res) => {
         res.status(500).send('An error occurred while sending the message.');
     }
     finally {
-        console.log('Inviting user:', selectedUsers, 'to room:', roomId);
         res.redirect(`/chat/${roomId}`);
     }
 });
@@ -329,7 +326,6 @@ app.post('/invite', (req, res) => {
 app.post("/add-reaction", (req, res) => {
     const { message_id, emoji, room_id } = req.body;
     const user_id = req.session.user_id;
-    console.log("Adding reaction to message", message_id, "by user", user_id, "with", emoji, "in room", room_id);
 
     try {
         if (message_id && emoji && user_id) {
