@@ -125,12 +125,25 @@ async function createInviteList(postData) {
 		FROM user u
 		WHERE u.user_id NOT IN (SELECT userID FROM user_list);`;
 
+
+	let getUsersInGroupSQL = `
+		SELECT
+    	u.user_id,
+    	u.username,
+    	CASE
+    	    WHEN ru.room_id IS NOT NULL THEN 1
+    	    ELSE 0
+    	END AS status
+		FROM user u
+		LEFT JOIN room_user ru ON u.user_id = ru.user_id AND ru.room_id = (:room_id);
+		`;
+
 	let params = {
 		room_id: postData.roomId,
 	}
 
 	try {
-		const [results] = await database.query(checkUserInGroupSQL, params);
+		const [results] = await database.query(getUsersInGroupSQL, params);
 		return results;
 	}
 	catch (err) {
@@ -138,5 +151,6 @@ async function createInviteList(postData) {
 		return false;
 	}
 }
+
 
 module.exports = { createUser, getUsers, getUser, checkUserInGroup, preCreateGroup, createInviteList };

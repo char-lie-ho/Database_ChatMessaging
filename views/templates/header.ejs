@@ -5,13 +5,12 @@
         <%= username %>'s chat
     </p>
 
-    <div style="position: absolute; left: 50%; color: #666; font-size:large;">
+    <div style="position: absolute; left: 45%; color: #666; font-size:large;">
         <% var room_name=room_name || '' ; %>
             <% if (room_name) { %>
                 <%= room_name %>
                     <% } %>
     </div>
     <div style="position: absolute; right: 5%;">
-        <button onclick="location.href='/members'">Members</button>
     <button onclick="location.href='/logout'">Log out</button></div>
 </header>
