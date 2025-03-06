@@ -80,7 +80,7 @@ app.get('/signup', (req, res) => {
     res.render("signup");
 });
 
-app.use(['/members'], async (req, res, next) => {
+app.use(['/members', '/chat/:room_id'], async (req, res, next) => {
     if (req.session.authenticated) {
         req.session.chatrooms = await db_chats.getGroups({ user_id: req.session.user_id });
         req.session.usersList = await db_users.preCreateGroup({ user_id: req.session.user_id });
@@ -266,6 +266,7 @@ app.post('/sendMessage', async (req, res) => {
             return res.redirect('/members');
         }
         await db_chats.addMessage({ message, user_id, roomId });
+        await db_chats.updateReadCount({ user_id, roomId });
         res.redirect(`/chat/${roomId}`);
     } catch (error) {
         console.error(error);

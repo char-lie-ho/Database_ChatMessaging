@@ -92,12 +92,20 @@ async function addUserToGroup(postData) {
 
 async function getGroupMessages(postData) {
     let getGroupMessagesSQL = `
-        SELECT m.text as text, m.sent_datetime as sent_time, me.*, ru.user_id as user_id, u.username, m.message_id as message_id
+        SELECT
+            m.text AS text,
+            m.sent_datetime AS sent_time,
+             COALESCE(GROUP_CONCAT(e.image SEPARATOR ' '), '') AS emoji_list,
+            ru.user_id AS user_id,
+            u.username,
+            m.message_id AS message_id
         FROM room_user ru
         JOIN message m ON m.room_user_id = ru.room_user_id
         LEFT JOIN message_emoji me ON m.message_id = me.message_id
+		LEFT JOIN emoji e ON e.emoji_id = me.emoji_id
         JOIN user u ON ru.user_id = u.user_id
         WHERE ru.room_id = (:room_id)
+        GROUP BY m.message_id
         ORDER BY m.sent_datetime ASC;
     `;
 
