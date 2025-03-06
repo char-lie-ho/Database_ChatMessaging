@@ -26,21 +26,37 @@
                 <% } %>
 
                     <div class="message-item <%= messages[i].user_id === user_id ? 'user-message' : 'other-message' %>">
-                        <div class="message-header">
-                            <span class="username">
-                                <%= messages[i].username %>
-                            </span>
-                            <span class="timestamp">
-                                <%= new Date(messages[i].sent_time).toLocaleString('en-US', { hour: '2-digit' ,
-                                    minute: '2-digit' , hour12: true }) %>
-                            </span>
-                        </div>
-                        <div class="message-text" style="color: brown;">
-                            <%= messages[i].text %>
+                        <div class="<%= messages[i].user_id === user_id ? 'user-bg' : 'other-bg' %>"
+                            style=" padding: 10px;    border-radius: 8px;">
+                            <div class="message-header">
+                                <span class="username">
+                                    <%= messages[i].username %>
+                                </span>
+                                <span class="timestamp">
+                                    <%= new Date(messages[i].sent_time).toLocaleString('en-US', { hour: '2-digit' ,
+                                        minute: '2-digit' , hour12: true }) %>
+                                </span>
+                            </div>
+                            <div class="message-text" style="color: brown;">
+                                <%= messages[i].text %>
+                            </div>
+                            <div class="emoji-wrapper">
+                                <div class="emoji-button-container">
+                                    <button>➕</button>
+                                    <div class="emoji-menu">
+                                        <button class="emoji-option">👍</button>
+                                        <button class="emoji-option">❤️</button>
+                                        <button class="emoji-option">😂</button>
+                                        <button class="emoji-option">😮</button>
+                                        <button class="emoji-option">😢</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <% } %>
+                        <div style="height: 40px;clear: both"></div>
     </div>
 
     <div>

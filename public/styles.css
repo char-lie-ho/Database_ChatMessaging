@@ -39,37 +39,62 @@
 }
 
 .message-item {
-    overflow: auto;
     clear: both;
-    width: 50%;
+    width: 40%;
     max-width: 500px;
     min-width: 200px;
     margin-bottom: 15px;
-    padding: 10px;
-    border-radius: 8px;
-    background-color: #f1f1f1;
-}
-
-.new-message-divider {
-    overflow: auto;
-    clear: both;
-    margin-bottom: 15px;
-    padding: 10px;
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
 }
 
 .user-message {
     float: right;
-    background-color: #dcf8c6;
     text-align: right;
 }
 
-.other-message {
-    background-color: #c6e6f8;
+.user-bg {
+    background-color: #d8fdd2;
+}
+
+.other-bg {
+    background-color: #e7e7e7;
+}
+
+.emoji-wrapper {
+    position: relative;
+    float: right;
+}
+
+.emoji-button-container {
+    position: relative;
+    display: inline-block;
+}
+
+.emoji-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    display: none;
+    gap: 1px;
+    white-space: nowrap;
+}
+
+.emoji-button-container:hover .emoji-menu,
+.emoji-menu:hover {
+    display: flex;
+}
+
+.emoji-option {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.emoji-option:hover {
+    transform: scale(1.2);
 }
 
 .message-header {
@@ -102,4 +127,16 @@
     padding: 10px;
     border-radius: 4px;
     border: 1px solid #ccc;
+}
+
+.new-message-divider {
+    overflow: auto;
+    clear: both;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
