@@ -92,7 +92,7 @@ async function addUserToGroup(postData) {
 
 async function getGroupMessages(postData) {
     let getGroupMessagesSQL = `
-        SELECT m.text as text, m.sent_datetime as sent_time, me.*, ru.user_id as user_id, u.username
+        SELECT m.text as text, m.sent_datetime as sent_time, me.*, ru.user_id as user_id, u.username, m.message_id as message_id
         FROM room_user ru
         JOIN message m ON m.room_user_id = ru.room_user_id
         LEFT JOIN message_emoji me ON m.message_id = me.message_id
@@ -165,4 +165,25 @@ async function updateReadCount(postData) {
         console.error('Error adding message:', error);
     }
 }
-module.exports = { getGroups, createGroup, addUserToGroup, getGroupMessages, addMessage, updateReadCount };
+
+async function addReaction(postData) {
+    let addEmojiSQL = `
+        INSERT  INTO message_emoji (message_id, emoji_id, user_id)
+        VALUES (:messageId, :emojiId, :userId);
+    `;
+
+    let params = {
+        messageId: postData.message_id,
+        emojiId: postData.emoji,
+        userId: postData.user_id
+    }
+
+    try {
+        await database.query(addEmojiSQL, params);
+        return true;
+    } catch (error) {
+        console.error('Error adding emoji:', error);
+    }
+}
+
+module.exports = { getGroups, createGroup, addUserToGroup, getGroupMessages, addMessage, updateReadCount, addReaction };

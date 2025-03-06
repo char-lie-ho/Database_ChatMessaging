@@ -68,14 +68,15 @@ async function createTables() {
 	
 	let createMessageEmojiSQL = `
 		CREATE TABLE message_emoji (
-			message_emoji_id INT PRIMARY KEY,
+			message_emoji_id INT PRIMARY KEY AUTO_INCREMENT,
 			message_id INT,
 			emoji_id INT,
 			user_id INT,
 			CONSTRAINT emoji_emoji_id FOREIGN KEY (emoji_id) REFERENCES emoji (emoji_id),
-    		CONSTRAINT user_emoji_id FOREIGN KEY (user_id) REFERENCES user (user_id),
-    		CONSTRAINT message_emoji_id FOREIGN KEY (message_id) REFERENCES message (message_id)); 
-		`;
+		    CONSTRAINT user_emoji_id FOREIGN KEY (user_id) REFERENCES user (user_id),
+		    CONSTRAINT message_emoji_id FOREIGN KEY (message_id) REFERENCES message (message_id),
+		    CONSTRAINT unique_reaction UNIQUE (message_id, emoji_id, user_id)
+		);`;
 	
 	try {
 		const results = await database.query(createUserTypeSQL);

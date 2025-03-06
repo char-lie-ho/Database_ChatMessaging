@@ -3,9 +3,6 @@
 <head>
     <link rel="stylesheet" href="/styles.css">
     <script>
-        // const roomId = window.location.pathname.split('/').pop();
-        // console.log("Room ID:", roomId);
-
         function scrollToBottom() {
             const chatContainer = document.getElementById('chatMessages');
             chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -39,18 +36,31 @@
                             </div>
                             <div class="message-text" style="color: brown;">
                                 <%= messages[i].text %>
+                                    <%= messages[i].message_id %>
                             </div>
                             <div class="emoji-wrapper">
+                                <!-- 10👍 placeholder for message emoji -->
                                 <div class="emoji-button-container">
                                     <button>➕</button>
-                                    <div class="emoji-menu">
-                                        <button class="emoji-option">👍</button>
-                                        <button class="emoji-option">❤️</button>
-                                        <button class="emoji-option">😂</button>
-                                        <button class="emoji-option">😮</button>
-                                        <button class="emoji-option">😢</button>
+                                    <div class="emoji-menu" id="<%= messages[i].message_id %>">
+                                        <form action="/add-reaction" method="POST">
+                                            <input type="hidden" name="room_id" value="<%= room_id %>" />
+                                            <input type="hidden" name="message_id"
+                                                value="<%= messages[i].message_id %>">
+                                            <button type="submit" name="emoji" value="1"
+                                                class="emoji-option">👍</button>
+                                            <button type="submit" name="emoji" value="2"
+                                                class="emoji-option">❤️</button>
+                                            <button type="submit" name="emoji" value="3"
+                                                class="emoji-option">😂</button>
+                                            <button type="submit" name="emoji" value="4"
+                                                class="emoji-option">😮</button>
+                                            <button type="submit" name="emoji" value="5"
+                                                class="emoji-option">😢</button>
+                                        </form>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>

@@ -266,7 +266,6 @@ app.post('/sendMessage', async (req, res) => {
             return res.redirect('/members');
         }
         await db_chats.addMessage({ message, user_id, roomId });
-        // TO-DO: reset unread count
         res.redirect(`/chat/${roomId}`);
     } catch (error) {
         console.error(error);
@@ -324,6 +323,27 @@ app.post('/invite', (req, res) => {
         res.redirect(`/chat/${roomId}`);
     }
 });
+
+
+app.post("/add-reaction", (req, res) => {
+    const { message_id, emoji, room_id } = req.body;
+    const user_id = req.session.user_id;
+    console.log("Adding reaction to message", message_id, "by user", user_id, "with", emoji, "in room", room_id);
+
+    try {
+        if (message_id && emoji && user_id) {
+            db_chats.addReaction({ message_id, emoji, user_id });
+        }
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).send('An error occurred while sending the message.');
+    }
+    finally {
+        res.redirect(`/chat/${room_id}`);
+    }
+});
+
 
 // middleware to check if user is logged in
 app.use('/loggedin', sessionValidation);
