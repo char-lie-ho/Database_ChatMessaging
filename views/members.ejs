@@ -5,6 +5,31 @@
 
     <head>
         <link rel="stylesheet" href="/styles.css">
+        <script>
+            let sortOrder = 'asc';
+            function sortTable(columnIndex) {
+                const table = document.getElementById("chatsTable");
+                const rows = Array.from(table.rows).slice(1); // Get all rows except the header
+                const isNumeric = rows.every(row => !isNaN(row.cells[columnIndex].innerText.trim()));
+
+                rows.sort((rowA, rowB) => {
+                    const cellA = rowA.cells[columnIndex].innerText.trim();
+                    const cellB = rowB.cells[columnIndex].innerText.trim();
+
+                    if (isNumeric) {
+                        return sortOrder === 'asc' ? Number(cellA) - Number(cellB) : Number(cellB) - Number(cellA);
+                    } else {
+                        return sortOrder === 'asc'
+                            ? cellA.localeCompare(cellB)
+                            : cellB.localeCompare(cellA);
+                    }
+                });
+
+                rows.forEach(row => table.appendChild(row));
+
+                sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+            }
+        </script>
     </head>
 
     <body>
@@ -14,10 +39,10 @@
             <table id="chatsTable">
                 <thead>
                     <tr>
-                        <th>Room ID</th>
-                        <th>Room Name</th>
-                        <th>Latest Message Date</th>
-                        <th>Unread Message</th>
+                        <th onclick="sortTable(0)">Room ID</th>
+                        <th onclick="sortTable(1)">Room Name</th>
+                        <th onclick="sortTable(2)">Latest Message Date</th>
+                        <th onclick="sortTable(3)">Unread Message</th>
                     </tr>
                 </thead>
                 <tbody>
