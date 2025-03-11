@@ -5,7 +5,7 @@
                 <div class="emoji-button-container">
                     <button>➕</button>
                     <div class="emoji-menu" id="<%= message.message_id %>">
-                        <form action="/add-reaction" method="POST">
+                        <form action="/add-reaction" method="POST" style="  margin-bottom: 5px;">
                             <input type="hidden" name="room_id" value="<%= room_id %>" />
                             <input type="hidden" name="message_id" value="<%= message.message_id %>">
                             <button type="submit" name="emoji" value="1" class="emoji-option">👍</button>

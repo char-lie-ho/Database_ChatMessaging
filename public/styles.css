@@ -78,6 +78,7 @@
     display: none;
     gap: 1px;
     white-space: nowrap;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .emoji-button-container:hover .emoji-menu,
