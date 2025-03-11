@@ -19,11 +19,11 @@ async function getGroups(postData) {
         		JOIN room_user ru ON m.room_user_id = ru.room_user_id
         		GROUP BY ru.room_id
                 )
-        	SELECT uug.name as room_name, mm.room_id, msgList.latestMsg, (mm.message_count - uug.current_count) as num_message_behind
+        	SELECT uug.name as room_name, mm.room_id, CONVERT_TZ(msgList.latestMsg, '+00:00','America/Vancouver') as latestMsg, (mm.message_count - uug.current_count) as num_message_behind
         	FROM unread_user_group uug
         	JOIN max_message as mm ON mm.room_id = uug.room_id
             LEFT JOIN msgList ON msgList.room_id = mm.room_id
-            ORDER BY msgList.latestMsg DESC;
+            ORDER BY latestMsg DESC;
             ;`;
 
     let params = {
