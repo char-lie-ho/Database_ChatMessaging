@@ -112,7 +112,7 @@ async function getGroupMessages(postData) {
         JOIN message m ON m.room_user_id = ru.room_user_id
         LEFT JOIN EmojiCounts ec ON m.message_id = ec.message_id
         JOIN user u ON ru.user_id = u.user_id
-        WHERE ru.room_id = 9
+        WHERE ru.room_id = :room_id
         GROUP BY m.message_id
         ORDER BY m.sent_datetime ASC;
     `;
