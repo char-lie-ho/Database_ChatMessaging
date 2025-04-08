@@ -33,6 +33,7 @@
     </head>
 
     <body>
+            <div class="container">
         <h3>Hello <%= username %> !</h3>
         <h4>You are in <%= groups.length %> groups.</h4>
         <div id="chats">
@@ -70,6 +71,7 @@
             </table>
             <br>
             <button onclick="location.href='/newGroup'">New Group</button>
+            </div>
     </body>
 
     <%- include("templates/footer") %>

@@ -1,39 +1,50 @@
-<title>Chatroom</title>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <title>Chatroom</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/styles.css">
     <script>
         function scrollToBottom() {
             const chatContainer = document.getElementById('chatMessages');
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            if (chatContainer) {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
         }
         window.onload = scrollToBottom;
     </script>
 </head>
 
-<%- include("templates/header") %>
-    <div id="chatMessages" style="overflow-y: auto; max-height: 500px; padding-right: 10px;">
-        <% for (let i=0; i < messages.length; i++) { %>
-            <% if (i==read_count) { %>
-                <div class="new-message-divider">
-                    <p>----------------You have <%= num_message_behind %> new messages ----------------</p>
-                </div>
-                <% } %>
-                    <%- include('templates/message', { message: messages[i], user_id: user_id, room_id: room_id }) %>
+<body>
+    <%- include("templates/header") %>
+        <div class="container">
+            <div id="chatMessages" style="overflow-y: auto; max-height: 500px; padding-right: 10px;">
+                <% for (let i=0; i < messages.length; i++) { %>
+                    <% if (i===read_count) { %>
+                        <div class="new-message-divider">
+                            <p>---------------- You have <%= num_message_behind %> new messages ----------------</p>
+                        </div>
                         <% } %>
-                            <div style="height: 40px; clear: both"></div>
-    </div>
+                            <%- include('templates/message', { message: messages[i], user_id: user_id, room_id: room_id
+                                }) %>
+                                <% } %>
+                                    <div style="height: 40px; clear: both;"></div>
+            </div>
 
-    <div>
-        <div id="chatInput">
-            <form action="/sendMessage" method="POST">
-                <input type="hidden" name="roomId" value="<%= room_id %>">
-                <input type="text" id="messageInput" name="message" placeholder="Type a message..." required>
-                <button type="submit">Send</button>
-            </form>
+            <div>
+                <div id="chatInput">
+                    <form action="/sendMessage" method="POST">
+                        <input type="hidden" name="roomId" value="<%= room_id %>">
+                        <input type="text" id="messageInput" name="message" placeholder="Type a message..." required>
+                        <button type="submit">Send</button>
+                    </form>
+                </div>
+                <button onclick="window.location.href = '/invite?room_id=<%= room_id %>'">Invite People</button>
+                <button onclick="window.location.href = '/members'" style="float: right;">Go Back</button>
+            </div>
         </div>
-        <button onclick="window.location.href = '/invite?room_id=<%= room_id %>'">Invite People</button>
-        <button onclick="window.location.href ='/members'" style="float: right;">Go Back</button>
-    </div>
+</body>
 
-    <%- include("templates/footer") %>
+</html>
