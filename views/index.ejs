@@ -1,17 +1,33 @@
-<title>Chat Messaging</title>
-<h2>
-    <%= loggedIn ? 'Hello, ' + username + '!' : 'Welcome!' %>
-</h2>
+<!DOCTYPE html>
+<html lang="en">
 
-<div>
-    <% if (loggedIn) { %>
-        <div style="margin-bottom: 10px;"><button onclick="location.href='/members'">Go to Members Area</button>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Messaging</title>
+    <link rel="stylesheet" href="/portal_styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2>
+            <%= loggedIn ? 'Hello, ' + username + '!' : "Let's chat!" %>
+        </h2>
+
+        <div>
+            <% if (loggedIn) { %>
+                <div><button onclick="location.href='/members'">Go to Members Area</button></div>
+                <div><button onclick="location.href='/logout'">Log out</button></div>
+                <% } else { %>
+                    <div><button onclick="location.href='/signup'">Sign Up!</button></div>
+                    <div><button onclick="location.href='/login'">Log in</button></div>
+                    <% } %>
         </div>
-        <div style="margin-bottom: 10px;"><button onclick="location.href='/logout'">Log out</button></div>
-        <% } else { %>
-            <div style="margin-bottom: 10px;"><button onclick="location.href='/signup'">Sign Up!</button></div>
-            <div style="margin-bottom: 10px;"><button onclick="location.href='/login'">Log in</button></div>
-            <% } %>
-</div>
 
-<%- include("templates/footer") %>
+        <div class="footer">
+            <%- include("templates/footer") %>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,21 +1,46 @@
-<title>Log in</title>
+<!DOCTYPE html>
+<html lang="en">
 
-<h2>Log in</h2>
-<form action='/loggingin' method='post'>
-    <div style="margin-bottom: 10px;">
-        Username: <input name='username' type='text' placeholder='username' required>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log in</title>
+    <link rel="stylesheet" href="/portal_styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2>Log in</h2>
+
+        <form action='/loggingin' method='post'>
+            <div class="form-field">
+                <label for="username">Username:</label>
+                <input id="username" name="username" type="text" placeholder="username" required>
+            </div>
+
+            <div class="form-field">
+                <label for="password">Password:</label>
+                <input id="password" name="password" type="password" placeholder="password" required>
+            </div>
+
+            <button type="submit">Log in</button>
+        </form>
+
+        <div style="margin-top: 10px;">
+            <button onclick="window.history.back()">Go Back</button>
+        </div>
+
+        <% var message=message || '' ; %>
+            <% if (message) { %>
+                <p class="message">
+                    <%= message %>
+                </p>
+                <% } %>
+
+                    <div class="footer">
+                        <%- include("templates/footer") %>
+                    </div>
     </div>
-    <div style="margin-bottom: 10px;">
-        Password: <input name='password' type='password' placeholder='password' required>
-    </div>
-    <button>Log in</button>
-</form>
-<br>
-<div><button onclick="window.history.back()">Go Back</button></div>
-<% var message=message || '' ; %>
-    <% if (message) { %>
-        <p class="message">
-            <%= message %>
-        </p>
-        <% } %>
-            <%- include("templates/footer") %>
+</body>
+
+</html>
