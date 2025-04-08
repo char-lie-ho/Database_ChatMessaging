@@ -1,31 +1,54 @@
-<title>Cerate New Group</title>
+<!DOCTYPE html>
+<html lang="en">
 
-<%- include("templates/header", {scripts: ["https://code.jquery.com/jquery-3.6.3.js","/script.js"]}) %>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create a New Group</title>
 
-    <h2>Create a New Group</h2>
-    <form action='/createGroup' method='post'>
-        <div style="margin-bottom: 10px;">
-            Group Name: <input name='groupName' type='text' placeholder='Name' required>
+    <link rel="stylesheet" href="/portal_styles.css">
 
-            <div class="scroll-box">
-                <h> Members to be included: </h>
-                <% users.forEach(user=> { %>
-                    <div class="item">
-                        <input type="checkbox" name="members" value="<%= user.user_id%>" id="<%= user.username %>">
-                        <label for="<%= user.user_id %>">
-                            <%= user.username %>
-                        </label>
-                    </div>
-                    <% }); %>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Create a New Group</h2>
+
+        <form action='/createGroup' method='post'>
+            <div class="form-field">
+                <label for="groupName">Group Name:</label>
+                <input id="groupName" name="groupName" type="text" placeholder="Enter Group Name" required>
             </div>
 
-            <button id="getCheckedUsers">Create</button>
-        </div>
-    </form>
-    <% var message=message || '' ; %>
-        <% if (message) { %>
-            <p class="message" style="color: darkred;">
-                <%= message %>
-            </p>
-            <% } %>
-                <div><button onclick="window.history.back()">Go Back</button></div>
+            <div class="form-field">
+                <h3>Members to be included:</h3>
+                <div class="scroll-box">
+                    <% users.forEach(user=> { %>
+                        <div class="item">
+                            <input type="checkbox" name="members" value="<%= user.user_id %>" id="<%= user.username %>">
+                            <label for="<%= user.username %>">
+                                <%= user.username %>
+                            </label>
+                        </div>
+                        <% }); %>
+                </div>
+            </div>
+
+            <button type="submit">Create</button>
+        </form>
+
+        <% var message=message || '' ; %>
+            <% if (message) { %>
+                <p class="message" style="color: darkred;">
+                    <%= message %>
+                </p>
+                <% } %>
+
+                    <div style="margin-top: 10px;">
+                        <button onclick="window.history.back()">Go Back</button>
+                    </div>
+    </div>
+</body>
+
+</html>

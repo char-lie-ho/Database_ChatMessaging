@@ -13,7 +13,7 @@
 }
 
 #chatsTable th {
-    background-color: #1191f9;
+    background-color: #4CAF50;
     color: white;
     font-weight: bold;
 }
@@ -29,7 +29,7 @@
 
 .room-name {
     font-weight: bold;
-    color: #007BFF;
+    color: #4CAF50;
 }
 
 #chatMessages {
@@ -139,4 +139,24 @@
     justify-content: center;
     align-items: center;
     text-align: center;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease;
+}
+
+button.unstyled {
+    all: unset;
+}
+
+body {
+    font-family: Arial, sans-serif;
 }

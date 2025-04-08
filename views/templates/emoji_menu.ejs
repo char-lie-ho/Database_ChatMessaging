@@ -3,7 +3,7 @@
         <%= message.emoji_list %>
             <% } %>
                 <div class="emoji-button-container">
-                    <button>➕</button>
+                    <button class="unstyled">➕</button>
                     <div class="emoji-menu" id="<%= message.message_id %>">
                         <form action="/add-reaction" method="POST" style="  margin-bottom: 5px;">
                             <input type="hidden" name="room_id" value="<%= room_id %>" />

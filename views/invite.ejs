@@ -1,31 +1,41 @@
-<title>Invite</title>
+<!DOCTYPE html>
+<html lang="en">
 
-<%- include("templates/header", {scripts: ["https://code.jquery.com/jquery-3.6.3.js","/script.js"]}) %>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invite</title>
+    <link rel="stylesheet" href="/portal_styles.css">
+</head>
 
-    <h2>Invite People to Group</h2>
-    <form action='/invite' method='post'>
-        <input type="hidden" name="room_id" value="<%= room_id %>">
-        <div style="margin-bottom: 10px;">
-            <div class="scroll-box">
-                <h3>Members in the group:</h3>
-                <% const inGroupUsers=users.filter(user=> user.status === 1); %>
-                    <% if (inGroupUsers.length> 0) { %>
-                        <% inGroupUsers.forEach(user=> { %>
-                            <p>
-                                <%= user.username %>
-                            </p>
-                            <% }); %>
-                                <% } else { %>
-                                    <p>No current group members.</p>
-                                    <% } %>
-                                        <h3>Users to be invited:</h3>
+<body>
+    <div class="container">
+        <h2>Invite People to Group</h2>
+        <form action='/invite' method='post'>
+            <input type="hidden" name="room_id" value="<%= room_id %>">
+
+
+            <h3>Members in the group:</h3>
+            <% const inGroupUsers=users.filter(user=> user.status === 1); %>
+                <% if (inGroupUsers.length> 0) { %>
+                    <% inGroupUsers.forEach(user=> { %>
+                        <p>
+                            <%= user.username %>
+                        </p>
+                        <% }); %>
+                            <% } else { %>
+                                <p>No current group members.</p>
+                                <% } %>
+
+                                    <h3>Users to be invited:</h3>
+                                    <div class="scroll-box">
                                         <% const notInGroupUsers=users.filter(user=> user.status === 0); %>
                                             <% if (notInGroupUsers.length> 0) { %>
                                                 <% notInGroupUsers.forEach(user=> { %>
                                                     <div class="item">
                                                         <input type="checkbox" name="members"
                                                             value="<%= user.user_id %>" id="<%= user.username %>">
-                                                        <label for="<%= user.user_id %>">
+                                                        <label for="<%= user.username %>">
                                                             <%= user.username %>
                                                         </label>
                                                     </div>
@@ -33,19 +43,23 @@
                                                         <% } else { %>
                                                             <p>No users available to invite.</p>
                                                             <% } %>
-            </div>
+                                    </div>
 
-            <% if (notInGroupUsers.length> 0) { %>
-                <br>
-                <button id="getCheckedUsers">Confirm</button>
+                                    <% if (notInGroupUsers.length> 0) { %>
+                                        <br>
+                                        <button id="getCheckedUsers">Confirm</button>
+                                        <% } %>
+        </form>
+
+        <% var message=message || '' ; %>
+            <% if (message) { %>
+                <p class="message" style="color: darkred;">
+                    <%= message %>
+                </p>
                 <% } %>
-        </div>
-    </form>
 
-    <% var message=message || '' ; %>
-        <% if (message) { %>
-            <p class="message" style="color: darkred;">
-                <%= message %>
-            </p>
-            <% } %>
-                <div><button onclick="window.history.back()">Go Back</button></div>
+                    <div><button onclick="window.history.back()">Go Back</button></div>
+    </div>
+</body>
+
+</html>
